@@ -1,6 +1,6 @@
 <!-- PROJECT LOGO -->
 <br />
-<div align="center">
+<div style="align-content: center;">
   <!--<a href="https://github.com/MysteriousPotato/nitecache">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>-->
@@ -12,33 +12,16 @@
     <br />
 </div>
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#license">License</a></li>
-  </ol>
-</details>
-
 
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
 go-lockable provides a simple implementation for acquiring locks by key.
+
 This can be useful when multiple goroutines need to manipulate a map atomically using async code without blocking access to all keys.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+This pkg won't introduce other 3rd party dependencies to your project other than itself as it only uses std packages. 
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -49,20 +32,48 @@ This can be useful when multiple goroutines need to manipulate a map atomically 
 go get github.com/MysteriousPotato/go-lockable
 ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 <!-- USAGE EXAMPLES -->
 ## Usage
-_For examples, please refer to the [Examples](https://github.com/MysteriousPotato/go-lockable/blob/master/example/example.go)_
+```go
+package main
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+import (
+	"github.com/MysteriousPotato/go-lockable"
+)
+
+func main() {
+	// Adding lock-by-key support to any struct:
+    type ArbitraryType struct {
+        lockable.Lockable[string]
+    }
+    arbitrary := ArbitraryType{
+        Lockable: lockable.New[string](),
+    }
+    arbitrary.LockKey("potato")
+    defer arbitrary.UnlockKey("potato")
+    
+    // Do async stuff...
+    
+    
+    // Using go-lockable built-in Map type:
+    lockableMap := lockable.NewMap[string, int]()
+    lockableMap.LockKey("potato")
+    defer lockableMap.UnlockKey("potato")
+    
+    // Do async stuff....
+    
+    lockableMap.Store("potato", 10)
+}
+
+```
+
+_For more detailed examples, please refer to the [Documentation](https://pkg.go.dev/github.com/MysteriousPotato/go-lockable)_
 
 <!-- ROADMAP -->
 ## Roadmap
 
 See the [open issues](https://github.com/MysteriousPotato/nitecache/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
 ## Contributing
@@ -75,5 +86,3 @@ If you have a suggestion that would make this better, please fork the repo and c
 ## License
 
 Distributed under the MIT License. See [LICENSE](https://github.com/MysteriousPotato/go-lockable/blob/master/LICENSE) for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
