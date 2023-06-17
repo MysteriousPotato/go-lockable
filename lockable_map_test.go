@@ -1,6 +1,7 @@
-package lockable
+package lockable_test
 
 import (
+	"github.com/MysteriousPotato/go-lockable"
 	"sort"
 	"strconv"
 	"sync"
@@ -13,7 +14,7 @@ func TestLockableMap(t *testing.T) {
 	writes := 100
 
 	wg := &sync.WaitGroup{}
-	lMap := NewMap[string, int]()
+	lMap := lockable.NewMap[string, int]()
 	ch := make(chan string, writes*len(keys))
 	for _, key := range keys {
 		for i := 0; i < writes; i++ {
@@ -51,11 +52,11 @@ func TestLockableMap(t *testing.T) {
 }
 
 func TestLockableUMutexMapLock(t *testing.T) {
-	keys := []string{"a", "b", "c", "d", "e", "f", "g"}
+	keys := []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"}
 	writes := 100
 
 	wg := &sync.WaitGroup{}
-	lMap := NewMutexMap[string]()
+	lMap := lockable.NewMutexMap[string]()
 	ch := make(chan string, writes*len(keys))
 	for _, key := range keys {
 		for i := 0; i < writes; i++ {
@@ -79,10 +80,13 @@ func TestLockableUMutexMapLock(t *testing.T) {
 	for res := range ch {
 		insertOrder = append(insertOrder, res)
 	}
+
+	// Make sure the key mutation loop iterations were non-blocking by verifying that insertOrder is not sorted.
 	if sort.IsSorted(insertOrder) {
 		t.Fatal("expected unsorted slice")
 	}
 
+	// Check that all keys are equal to the number of writes, indicating that the last Set call was in fact done in the last iteration.
 	lMap.Range(func(key, value any) bool {
 		if value != writes-1 {
 			t.Fatalf("expected %v, got %v", writes-1, value)
@@ -94,17 +98,17 @@ func TestLockableUMutexMapLock(t *testing.T) {
 // This benchmark is mostly meaningless.
 //
 // It's only goal is to show that using "per key" locks is much more performant when locking during async code. Duh!
-func BenchmarkLockableMap(b *testing.B) {
+func BenchmarkMaps(b *testing.B) {
 	writes := 5
 	reads := 200
 	blockingLocks := 1
 	blockingDuration := time.Millisecond * 10
-	keys := []string{}
+	var keys []string
 	for i := 0; i < 10; i++ {
 		keys = append(keys, strconv.Itoa(i))
 	}
 
-	lUMuMap := NewMutexMap[string]()
+	lUMuMap := lockable.NewMutexMap[string]()
 	b.Run("lockableMutexMap", func(b *testing.B) {
 		wg := &sync.WaitGroup{}
 		for n := 0; n < b.N; n++ {
@@ -147,7 +151,7 @@ func BenchmarkLockableMap(b *testing.B) {
 		wg.Wait()
 	})
 
-	lMap := NewMap[string, int]()
+	lMap := lockable.NewMap[string, int]()
 	b.Run("lockableMap", func(b *testing.B) {
 		wg := &sync.WaitGroup{}
 		for n := 0; n < b.N; n++ {
@@ -192,7 +196,7 @@ func BenchmarkLockableMap(b *testing.B) {
 		wg.Wait()
 	})
 
-	valueMapWithLock := map[string]interface{}{}
+	valueMapWithLock := map[string]any{}
 	mapMu := &sync.RWMutex{}
 	b.Run("map", func(b *testing.B) {
 		wg := &sync.WaitGroup{}
