@@ -1,14 +1,11 @@
 <!-- PROJECT LOGO -->
 <br />
 <div style="align-content: center;">
-  <!--<a href="https://github.com/MysteriousPotato/go-lockable">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>-->
-
-<h3 align="center">go-lockable</h3>
-
-  <p align="center">
-    key based lock
+    <!--<a href="https://github.com/MysteriousPotato/go-lockable">
+        <img src="images/logo.png" alt="Logo" width="80" height="80">
+    </a>-->
+    <h3 style="text-align: center;">go-lockable</h3>
+    <p style="text-align: center;">key based lock</p>
     <br />
 </div>
 
