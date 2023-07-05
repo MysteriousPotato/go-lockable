@@ -51,7 +51,7 @@ func TestLockableMap(t *testing.T) {
 	})
 }
 
-func TestLockableUMutexMapLock(t *testing.T) {
+func TestLockableMutexMapLock(t *testing.T) {
 	keys := []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"}
 	writes := 100
 

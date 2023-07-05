@@ -6,6 +6,20 @@ import (
 	"testing"
 )
 
+func TestIsLocked(t *testing.T) {
+	lock := lockable.New[string]()
+
+	lock.RLockKey("potato")
+	if !lock.IsLocked("potato") {
+		t.Fatal("expected isLocked true, got false")
+	}
+
+	lock.RUnlockKey("potato")
+	if lock.IsLocked("potato") {
+		t.Fatal("expected isLocked false, got true")
+	}
+}
+
 func BenchmarkLockableLock(b *testing.B) {
 	l := lockable.New[string]()
 	for i := 0; i < b.N; i++ {

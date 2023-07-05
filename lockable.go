@@ -165,7 +165,7 @@ func (l Lockable[T]) RLockKeyDuring(key T, fn func() (any, error)) (any, error) 
 	return fn()
 }
 
-// IsLocked is used to determine whether a key has been locked without locking the key..
+// IsLocked is used to determine whether a key has been locked without locking the key.
 func (l Lockable[T]) IsLocked(key T) bool {
 	l.locksMu.Lock()
 	defer l.locksMu.Unlock()

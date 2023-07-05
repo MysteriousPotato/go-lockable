@@ -1,7 +1,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div style="align-content: center;">
-  <!--<a href="https://github.com/MysteriousPotato/nitecache">
+  <!--<a href="https://github.com/MysteriousPotato/go-lockable">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>-->
 
@@ -19,9 +19,9 @@
 
 go-lockable provides a simple implementation for acquiring locks by key.
 
-This can be useful when multiple goroutines need to manipulate a map atomically using async code without blocking access to all keys.
+This can be useful when multiple goroutines need to manipulate a map atomically using async calls without blocking access to all keys or when access to certain ressource needs to be partially locked.
 
-This pkg won't introduce other 3rd party dependencies to your project other than itself as it only uses std packages. 
+This pkg does not use any 3rd party dependencies, only std packages. 
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -43,18 +43,10 @@ import (
 )
 
 func main() {
-	// Adding lock-by-key support to any struct:
-    type ArbitraryType struct {
-        lockable.Lockable[string]
-    }
-    arbitrary := ArbitraryType{
-        Lockable: lockable.New[string](),
-    }
-    arbitrary.LockKey("potato")
-    defer arbitrary.UnlockKey("potato")
-    
-    // Do async stuff...
-    
+	// Using lockable like a mutex:
+    lock := lockable.New[string]()
+	lock.LockKey("potato")
+    defer lock.UnlockKey("potato")
     
     // Using go-lockable built-in Map type:
     lockableMap := lockable.NewMap[string, int]()
@@ -68,12 +60,12 @@ func main() {
 
 ```
 
-_For more detailed examples, please refer to the [Documentation](https://pkg.go.dev/github.com/MysteriousPotato/go-lockable)_
+For more detailed examples, please refer to the [Documentation](https://pkg.go.dev/github.com/MysteriousPotato/go-lockable)_
 
 <!-- ROADMAP -->
 ## Roadmap
 
-See the [open issues](https://github.com/MysteriousPotato/nitecache/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/MysteriousPotato/go-lockable/issues) for a full list of proposed features (and known issues).
 
 <!-- CONTRIBUTING -->
 ## Contributing

@@ -1,4 +1,4 @@
 test:
-	go test ./... -race
+	go test ./... -race -cover
 doc:
 	pkgsite
